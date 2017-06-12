@@ -1,13 +1,9 @@
 import { createApolloServer } from 'meteor/apollo';
-import { makeExecutableSchema } from 'graphql-tools';
 
-import { typeDefs, resolvers } from '/imports/api/tasks';
+import schema from '/imports/api/schema';
 
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+// console.log(schema);
 
 createApolloServer({
-  schema,
+    schema,
 });

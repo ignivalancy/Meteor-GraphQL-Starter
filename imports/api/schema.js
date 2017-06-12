@@ -1,31 +1,18 @@
-import { Random } from 'meteor/random';
+import { makeExecutableSchema } from 'graphql-tools';
+import { loadSchema, getSchema } from 'graphql-loader';
+import { mergeModules, loadModules } from 'graphql-schema-modules';
+import { initAccounts } from 'meteor/nicolaslopezj:apollo-accounts'
 
-export const typeDefs = [`
-type Email {
-  address: String
-  verified: Boolean
-}
-type User {
-  emails: [Email]
-  randomString: String
-  _id: String
-}
-type Query {
-  user: User
-}`,];
+initAccounts();
 
-export const resolvers = {
-  Query: {
-    user(root, args, context) {
-      /*
-       * We access to the current user here thanks to the context. The current
-       * user is added to the context thanks to the `meteor/apollo` package.
-       */
-      return context.user;
-    },
-  },
-  User: {
-    emails: ({ emails }) => emails,
-    randomString: () => Random.id(),
-  },
-};
+import user from './graphql/user';
+import categories from './graphql/categories';
+import tasks from './graphql/tasks';
+
+const accounts = getSchema()
+
+const { typeDefs, resolvers } = mergeModules([categories, tasks, user, accounts]);
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+export default schema;

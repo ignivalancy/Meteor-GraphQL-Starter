@@ -22,3 +22,6 @@ static-html
 std:accounts-ui
 
 apollo
+
+nicolaslopezj:apollo-accounts
+swydo:graphql
