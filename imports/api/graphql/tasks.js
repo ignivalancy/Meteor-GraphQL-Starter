@@ -1,15 +1,12 @@
-import { Mongo } from 'meteor/mongo';
-
-export const Tasks = new Mongo.Collection('tasks');
+import { Tasks } from '../../collections';
 
 export const typeDefs = `
-                # Description for the type task 123
+                # type task
                 type Task {
                   _id: String
-                  text: String
-                  complete: Boolean
-                  catId: String
-                  userId: String
+                  title: String!
+                  isComplete: Boolean
+                  createdAt: Date
                 }
                 type Query {
                   tasks : [Task]
@@ -19,24 +16,66 @@ export const typeDefs = `
                 }
                 type Mutation {
                   createTask (
-                    text: String!
-                  ): String
+                    title: String!
+                    cId: String!
+                  ): SuccessResponse
+                  toggleTask (
+                    tId: String!
+                  ): SuccessResponse
+                  deleteTask (
+                    tId: String!
+                  ): SuccessResponse
                 }
               `;
 
 export const resolvers = {
     Query: {
-        tasks(root, { userId }, context) {
-            return Tasks.find({})
-                .fetch();
+        tasks(root, args, { userId }) {
+            if (userId)
+                return Tasks.find({ createdBy: userId })
+                    .fetch();
         },
-        task(root, { tId }, context) {
-            return Tasks.findOne({ _id: tId });
+        task(root, { tId }, { userId }) {
+            if (userId)
+                return Tasks.findOne({ _id: tId, createdBy: userId });
         },
     },
     Mutation: {
-        createTask: (root, { text }, context) => {
-            return Tasks.insert({ text, complete: false, userId: context.user._id });
+        async createTask(root, { title, cId }, { userId }) {
+
+            if (userId) {
+                Tasks.insert({ title, isComplete: false, createdBy: userId, cId, createdAt: new Date });
+                return { success: true };
+            } else {
+                throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
+            }
+
+        },
+        async toggleTask(root, { tId }, { userId }) {
+
+            if (userId) {
+                let task = Tasks.findOne({ _id: tId, createdBy: userId });
+                if (task) {
+                    Tasks.update({ _id: tId }, { $set: { isComplete: !task.isComplete } });
+                    return { success: true };
+                } else {
+                    throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
+
+                }
+            } else {
+                throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
+            }
+
+        },
+        async deleteTask(root, { tId }, { userId }) {
+
+            if (userId) {
+                Tasks.remove({ _id: tId });
+                return { success: true };
+            } else {
+                throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
+            }
+
         },
     }
 };

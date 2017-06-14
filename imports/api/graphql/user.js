@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor'
+
 export const typeDefs = `
                 # Defines a user type and its fields
                 type User {
@@ -15,6 +17,11 @@ export const typeDefs = `
                 }
                 type Query {
                   me:User
+                }
+                type Mutation {
+                  updateProfile(
+                    name: String!
+                  ): SuccessResponse
                 }`;
 
 export const resolvers = {
@@ -23,7 +30,19 @@ export const resolvers = {
             return context.user;
         },
     },
-    User: {
-        emails: ({ emails }) => emails
+    Mutation: {
+        async updateProfile(root, args, { userId }) {
+            if (userId) {
+
+                let user = Meteor.users.findOne(userId);
+                let profile = {...user.profile, ...args };
+                Meteor.users.update(user._id, { $set: { profile } })
+                return { success: true };
+
+            } else {
+                throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
+            }
+
+        }
     }
 };
