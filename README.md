@@ -1,6 +1,6 @@
-# Meteor + Apollo boilerplate
+# Todo App GraphQL
 
-A simple kit to start experimenting with Apollo, Meteor and React.
+A simple kit to start GraphQL experimenting with Apollo, Meteor and React.
 
 ### Includes
 - GraphQL server running with Express bound to the Meteor app
@@ -8,8 +8,6 @@ A simple kit to start experimenting with Apollo, Meteor and React.
 - React
 - Accounts UI, Basic & password
 - ES6 syntax
-
-Check `package.json` for specific versions
 
 ### Running it
 
@@ -28,13 +26,16 @@ GraphiQL is enabled at [/graphiql](http://localhost:3000/graphiql).
     │   └── main.js             # Imports all required files - React render
     ├── imports                 # A client/server folder
     │   ├── api                 #
-    │   |  └── schema.js        # Schema & query definitions
+    │   |  └── graphql          # Graphql query & mutation definitions
+    │   |  └── schema.js        # Graphql schema configration
+    │   ├── collections         # Mongodb Collections
     |   └── ui                  # UI React rendering
     │      └── App.js           # Component using `graphql` HOC
     │      └── Header.js        # Basic presentational component
     │      └── Loading.js       # Reusable loading component
     │      └── LoginForm.js     # Component using `withApollo` HOC
     ├── server                  # Server files
+    │   └── account.js          # Accounts configrations
     │   └── server.js           # Main server file initiating Apollo server
     └── package.json            # node dependencies
 
