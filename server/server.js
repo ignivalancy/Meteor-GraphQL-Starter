@@ -13,12 +13,10 @@ import schema from '/imports/api/schema';
 
 const customBuildOptions = (request, res) => {
 
-    console.log('*** request method', request.method, '*** request headers', request.headers);
-
-    const user = null;
+    // console.log('*** request method', request.method, '*** request headers', request.headers);
 
     return {
-        context: { user }, // This context object is passed to all resolvers.
+        context: { headers: request.headers }, // This context object is passed to all resolvers.
         schema,
     };
 };

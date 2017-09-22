@@ -10,7 +10,6 @@ export default {
 
     error: function(event_name, ...info) {
         console.error(event_name, ...info);
-
     },
 
     warn: function(event_name, ...info) {

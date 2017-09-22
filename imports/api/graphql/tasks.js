@@ -1,11 +1,16 @@
-import { Tasks } from '../../collections';
+import { Categories, Tasks } from '../../collections';
 
 export const typeDefs = `
-                # type task
+                type CategoryInfo {
+                  _id: String!
+                  name: String!
+                  createdAt: Date
+                }
                 type Task {
                   _id: String
-                  title: String!
+                  title: String
                   isComplete: Boolean
+                  category: CategoryInfo
                   createdAt: Date
                 }
                 type Query {
@@ -30,15 +35,15 @@ export const typeDefs = `
 
 export const resolvers = {
     Query: {
-        tasks(root, args, { userId }) {
-            if (userId)
-                return Tasks.find({ createdBy: userId })
+        tasks(root, args, context) {
+            if (context.userId)
+                return Tasks.find({ createdBy: context.userId })
                     .fetch();
         },
         task(root, { tId }, { userId }) {
             if (userId)
                 return Tasks.findOne({ _id: tId, createdBy: userId });
-        },
+        }
     },
     Mutation: {
         async createTask(root, { title, cId }, { userId }) {
@@ -76,6 +81,11 @@ export const resolvers = {
                 throw new Meteor.Error("permission-denied", "Insufficient rights for this action.");
             }
 
-        },
+        }
+    },
+    Task: {
+        category({ cId }) {
+            return Categories.findOne({ _id: cId });
+        }
     }
 };
