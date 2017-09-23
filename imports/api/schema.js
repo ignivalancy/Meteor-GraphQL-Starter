@@ -5,13 +5,13 @@ import { initAccounts } from 'meteor/nicolaslopezj:apollo-accounts'
 
 initAccounts();
 
+// **** Custom Scalar 
 import date from './graphql/date';
 import json from './graphql/json';
-
+// **** Schema
 import user from './graphql/user';
 import categories from './graphql/categories';
 import tasks from './graphql/tasks';
-
 
 const accounts = getSchema()
 

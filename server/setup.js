@@ -6,9 +6,7 @@
  * */
 
 import { Meteor } from 'meteor/meteor';
-
 import logger from '/imports/utils/logger';
-
 import db from '/imports/configs/db';
 import host from '/imports/configs/host';
 import smtp from '/imports/configs/smtp';
@@ -23,8 +21,8 @@ process.env.MAIL_URL = `smtp://${encodeURIComponent(smtp_instance.username)}:${e
 // process.env.PORT = host_instance.port;
 process.env.HTTP_FORWARDED_COUNT = 1;
 
-Meteor.startup(function() {
+// Meteor.startup(function() {
 
-    logger.info(`Listening @ ${host_instance}`);
+//     logger.info(`Listening @ ${host_instance.port}`);
 
-});
+// });
